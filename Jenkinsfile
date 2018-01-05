@@ -1,10 +1,10 @@
 pipeline {
-  agent {
-    node {
-      label 'net'
-    }
-    
+  environment {
+		BRANCH_NAME = "${scm.branches[0].name}"
   }
+  
+  agent { label 'net' }
+  
   stages {
     stage('Build dev') {
       parallel {
@@ -14,6 +14,9 @@ pipeline {
           }
         }
         stage('Build Preprod') {
+          when {
+            expression { env.BRANCH_NAME ==~ /.*(preprod).*/ }
+          }
           steps {
             bat 'script.ps'
           }
