@@ -1,9 +1,23 @@
 pipeline {
-  agent any
+  agent {
+    node {
+      label 'net'
+    }
+    
+  }
   stages {
     stage('Build dev') {
-      steps {
-        powershell(script: 'test.ps', returnStatus: true)
+      parallel {
+        stage('Build dev') {
+          steps {
+            powershell(script: 'test.ps', returnStatus: true)
+          }
+        }
+        stage('Build Preprod') {
+          steps {
+            bat 'script.ps'
+          }
+        }
       }
     }
   }
